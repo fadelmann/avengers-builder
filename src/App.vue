@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 <template>
   <div id="app">
+    <h1 class="headline">Choose your Avengers!</h1>
     <div class="hub">
       <button @click="removeAll">Remove all</button>
       <h1 class="budget">${{ budget }}</h1>
@@ -13,12 +14,12 @@
     </div>
     <div class="characters">
       <div v-for="character in apiCharacters" :key="character.id" class="character" :class="{ selected: character.selected}" @click="toggleSelect(character)">
-          <h1>{{ character.name }}</h1>
-          <p>price: ${{ character.price }}</p>
-          <a :href="character.urls[1].url" target="_blank">To the Wiki</a>
           <div class="thumbnail">
             <img :src="`${character.thumbnail.path}/standard_xlarge.jpg`" :alt="character.name" />
           </div>
+          <h1>{{ character.name }}</h1>
+          <p>price: ${{ character.price }}</p>
+          <a :href="character.urls[1].url" target="_blank">To the Wiki</a>
           <button class="select-btn" :disabled="budget < character.price && !character.selected || avengers.length >= 6 && !character.selected">{{ character.selected === false ? 'Select' : 'Unselect' }}</button>
       </div>
     </div>
@@ -78,17 +79,36 @@ export default {
 </script>
 
 <style>
+* {
+  margin: 0;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Bangers', cursive;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #ffffff;
+  flex-direction: column;
   display: flex;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+  background-color: #9f0013;
+  background-image: url(./assets/bg.jpg);
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.headline {
+  font-size: 100px;
+  margin: 5rem 0;
+  letter-spacing: .7rem;
+  padding: 3rem;
+  background: white;
+  color: rgb(38, 71, 87);
 }
 
 .characters {
@@ -101,16 +121,16 @@ export default {
 }
 
 .character {
-  background: rgb(231, 231, 231);
-  border: solid 5px rgb(216, 216, 216);
+  background: rgb(26 45 52);
+  border: solid 5px rgb(38, 71, 87);
   border-radius: 10%;
-  padding: 1rem;
   margin: 1rem;
-  min-width: 350px;
+  padding: 2rem;
   max-width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   cursor: pointer;
 }
 
@@ -118,13 +138,17 @@ export default {
   border-radius: 12%;
   transition: all ease-in-out 300ms;
   box-shadow: 0 0 0 black;
-  margin: 40px 0;
+  margin:  0 0 40px 0;
   height: 200px;
 }
 
 .thumbnail img {
   border-radius: 12%;
   height: 200px;
+}
+
+.character:hover {
+  border: solid 5px#ffffff;
 }
 
 .character:hover .thumbnail {
@@ -139,7 +163,6 @@ export default {
   border: solid 5px black;
 }
 
-
 .avenger-thubmnail{
   border-radius: 50%;
   width: 100px;
@@ -149,7 +172,7 @@ export default {
   position: fixed;
   background: black;
   color: white;
-  min-height: 200px;
+  min-height: 150px;
   min-width: 60%;
   bottom: 0;
   left: calc(50% - 30%);
@@ -176,8 +199,11 @@ export default {
 .select-btn {
   cursor: pointer;
   all: unset;
-  background: yellow;
+  background: rgb(206, 239, 255);
+  color: rgb(38, 71, 87);
   padding: .5rem 1rem;
+  font-weight: bold;
+  margin-top: 1rem;
 }
 
 .select-btn:disabled {
