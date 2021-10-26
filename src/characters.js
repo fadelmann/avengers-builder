@@ -12,7 +12,7 @@ export const characters = [
     price: 5,
   },
   {
-    name: "Iron Man",
+    name: "Silver Surfer",
     price: 5,
   },
   {
@@ -24,11 +24,11 @@ export const characters = [
     price: 4,
   },
   {
-    name: "Ant Man",
+    name: "Iron Man",
     price: 4,
   },
   {
-    name: "War Machine",
+    name: "Deadpool",
     price: 4,
   },
   {
@@ -40,15 +40,15 @@ export const characters = [
     price: 4,
   },
   {
-    name: "Rocket",
+    name: "Magneto",
     price: 3,
   },
   {
-    name: "Spiderman",
+    name: "Blade",
     price: 3,
   },
   {
-    name: "Mantis",
+    name: "Wolverine",
     price: 3,
   },
   {
@@ -56,7 +56,7 @@ export const characters = [
     price: 3,
   },
   {
-    name: "Star Lord",
+    name: "Daredevil",
     price: 3,
   },
   {
@@ -68,11 +68,7 @@ export const characters = [
     price: 2,
   },
   {
-    name: "Okoye",
-    price: 2,
-  },
-  {
-    name: "Valkyrie",
+    name: "Storm",
     price: 2,
   },
   {
@@ -84,11 +80,7 @@ export const characters = [
     price: 2,
   },
   {
-    name: "Shuri",
-    price: 1,
-  },
-  {
-    name: "Kraglin",
+    name: "Loki",
     price: 1,
   },
   {

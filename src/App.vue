@@ -1,6 +1,9 @@
 /* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars */
 <template>
   <div id="app">
+    <div v-if="loading" class="spinner"/>
     <h1 class="headline">Choose your Avengers!</h1>
     <div class="hub" :class="{ show: show }">
       <div class="top">
@@ -24,7 +27,7 @@
         </div>
     </div>
     </div>
-    <div v-if="cardsLoaded" class="characters">
+    <div class="characters">
       <div ref="characterRef" v-for="character in apiCharacters" :key="character.id" class="character" :class="{ selected: character.selected }" @click="toggleSelect(character)">
           <div class="thumbnail">
             <img :src="`${character.thumbnail.path}/standard_xlarge.jpg`" :alt="character.name" />
@@ -35,11 +38,11 @@
           <button class="select-btn" :disabled="budget < character.price && !character.selected || avengers.length >= 6 && !character.selected">{{ character.selected === false ? 'Select' : 'Unselect' }}</button>
       </div>
     </div>
-    <div v-else class="spinner"></div>
   </div>
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
 import axios from 'axios';
 import anime from 'animejs/lib/anime.es.js';
 // eslint-disable-next-line no-unused-vars
@@ -53,33 +56,48 @@ export default {
       apiCharacters: [],
       budget: 20,
       show: false,
-      cardsLoaded: false,
+      loading: true,
     }
   },
   mounted() {
-    let count = 0;
-    characters.forEach(element => {
-      axios
-      .get(`https://gateway.marvel.com/v1/public/characters?name=${element.name}&apikey=${public_key}`)
-      .then(response => {
-        const charObj = response.data.data.results[0];
-        charObj.price = element.price;
-        charObj.selected = false;
-        charObj.btnText = 'Select';
-        this.apiCharacters.push(charObj)
-          }
-        )
-      .catch(error => console.log(error));
-      count++
-      if(count === characters.length) {
-        this.cardsLoaded = true;
-      }
-    })
-  },
-  updated() {
-    this.$nextTick(function () {
-      this.staggerChars();
-    })
+    // let count = 0;
+    // characters.forEach(element => {
+    //   axios
+    //   .get(`https://gateway.marvel.com/v1/public/characters?name=${element.name}&apikey=${public_key}`)
+    //   .then(response => {
+    //     const charObj = response.data.data.results[0];
+    //     return charObj;
+    //       }
+    //     )
+    //     .then((e) => {
+    //       this.apiCharacters.push(e)
+    //     })
+    //     .then(() => {
+    //       if(count === characters.length) {
+    //         this.staggerChars();
+    //       }
+    //     })
+    //   .catch(error => console.log(error));
+    //   count++
+    // })
+
+    let promises = [];
+    for (let i = 0; i < characters.length; i++) {
+      promises.push(
+         axios.get(`https://gateway.marvel.com/v1/public/characters?name=${characters[i].name}&apikey=${public_key}`)
+         .then(response => {
+            const charObj = response.data.data.results[0];
+            charObj.price = characters[i].price;
+            charObj.selected = false;
+            charObj.btnText = 'Select';
+           this.apiCharacters.push(charObj);
+         })
+      )
+    }
+    Promise.all(promises).then(() => {
+      this.loading = false,
+      setTimeout(this.staggerChars(), 1000); 
+    });
   },
   methods: {
     staggerChars() {
@@ -88,7 +106,7 @@ export default {
         targets: targets,
         translateY: 0,
         opacity: 1,
-        delay: anime.stagger(50) // increase delay by 100ms for each elements.
+        delay: anime.stagger(250) // increase delay by 100ms for each elements.
       });
     },
     toggleSelect(c) {
@@ -138,11 +156,21 @@ export default {
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  background-image: url(./assets/bg.jpg);
   height: 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  background-image: url(./assets/bg.jpg);
+}
+
+.spinner {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  background: forestgreen;
+  top: 0;
+  left: 0;
+  z-index: 10;
 }
 
 .headline {
@@ -301,12 +329,6 @@ export default {
 
 .select-btn:disabled {
   opacity: .3;
-}
-
-.spinner {
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
 }
 
 </style>
