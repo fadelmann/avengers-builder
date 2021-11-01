@@ -4,7 +4,7 @@
       v-for="(character, index) in shuffledChars"
       :key="`${character.id}_spinner`"
       class="spinnerImgs"
-      :src="`${character.thumbnail.path}/standard_xlarge.jpg`"
+      :src="`${character.thumbnail.path}/standard_fantastic.jpg`"
       :style="getComputedStyle(index)"
     >
   </div>

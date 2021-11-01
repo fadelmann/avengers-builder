@@ -2,98 +2,53 @@
   <div id="app">
     <transition name="fade">
       <spinner
-        v-if="loading"
+        v-if="loading && !error"
         :characters="apiCharacters"
       />
     </transition>
-    <h1 class="headline">
-      Choose your Avengers!
-    </h1>
-    <div
-      class="hub"
-      :class="{ show: show }"
-    >
-      <div class="top">
-        <div class="budget-container">
-          <h4>Your Budget:</h4>
-          <h1 class="budget">
-            ${{ budget }}
-          </h1>
-        </div>
-        <button
-          class="btn remove-btn"
-          @click="removeAll"
-        >
-          Remove all
-        </button>
-      </div>
-      <div class="avengers">
-        <div
-          v-for="avenger in avengers"
-          :key="`avenger_${avenger.id}`"
-          class="avenger"
-        >
-          <img
-            :src="`${avenger.thumbnail.path}/standard_xlarge.jpg`"
-            :alt="avenger.name"
-          >
-          <h5>{{ avenger.name }}</h5>
-        </div>
-        <div
-          v-for="(placeholder, index) in placeholders"
-          :key="`placeholder${index}`"
-          class="avenger"
-        >
-          <div class="placeholder">
-            <h1>?</h1>
-          </div>
-          <h5>?</h5>
-        </div>
-      </div>
-    </div>
-    <div
-      ref="characterGrid"
-      class="characters"
-    >
+    <transition name="fade">
       <div
-        v-for="character in apiCharacters"
-        ref="characterRef"
-        :key="character.id"
-        class="character"
-        :class="{ selected: character.selected }"
-        @click="toggleSelect(character)"
+        v-if="error"
+        class="error"
       >
-        <div class="thumbnail">
-          <img
-            :src="`${character.thumbnail.path}/standard_xlarge.jpg`"
-            :alt="character.name"
+        <div class="error-content">
+          <h1>Sorry, we made a mistake. Please try to load the page again.</h1>
+          <button
+            class="btn error-btn"
+            @click="reload"
           >
-        </div>
-        <h1 class="card-headline">
-          {{ character.name }}
-        </h1>
-        <div class="description">
-          <a
-            class="wiki-link"
-            :href="character.urls[1].url"
-            target="_blank"
-          >To the Wiki</a>
-        </div>
-        <button
-          class="btn select-btn"
-          :disabled="budget < character.price && !character.selected || avengers.length >= 6 && !character.selected"
-        >
-          {{ character.selected === false ? 'Select' : 'Unselect' }}
-        </button>
-        <div class="price">
-          <span v-if="!character.selected">${{ character.price }}</span>
-          <span
-            v-else
-            class="material-icons"
-          >check_circle</span>
+            Reload
+          </button>
         </div>
       </div>
-    </div>
+    </transition>
+    <main v-if="!error">
+      <h1 class="headline">
+        Choose your Avengers!
+      </h1>
+      <hub
+        :show="show"
+        :budget="budget"
+        @remove-all="removeAll"
+      />
+      <div
+        ref="characterGrid"
+        class="characters"
+      >
+        <div
+          v-for="character in apiCharacters"
+          ref="characterRef"
+          :key="character.id"
+          class="character"
+          :class="{ selected: character.selected }"
+          @click="toggleSelect(character)"
+        >
+          <card
+            :character="character"
+          />
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
@@ -107,11 +62,15 @@ import anime from 'animejs/lib/anime.es.js';
 import { public_key } from './marvel';
 import { characters as customCharactersData } from './characters';
 import Spinner from './components/Spinner';
+import Hub from './components/Hub';
+import Card from './components/Card';
 
 export default {
   name: 'App',
   components: {
     Spinner,
+    Hub,
+    Card,
   },
   data() {
     return {
@@ -119,6 +78,7 @@ export default {
       budget: 20,
       show: false,
       loading: true,
+      error: false,
     };
   },
   computed: {
@@ -137,7 +97,7 @@ export default {
           ...r.data.data.results[0],
           price,
           selected: false,
-        }));
+        })).catch(() => this.error = true);
     }));
 
     setTimeout(() => {
@@ -183,10 +143,12 @@ export default {
       }
     },
     removeAll() {
-      this.staggerChars();
       this.budget = 20;
       this.apiCharacters.map(e => e.selected = false);
     },
+    reload() {
+      location.reload();
+    }
   },
 };
 </script>
@@ -218,19 +180,18 @@ h1 {
   letter-spacing: .1rem;
 }
 
-.spinner {
+.error {
   position: fixed;
-  height: 100vh;
-  width: 100vw;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  overflow: hidden;
   background: rgb(38, 71, 87);
-  top: 0;
-  left: 0;
-  z-index: 20;
-}
-
-.spinnerImgs {
-  position: absolute;
-  opacity: .5;
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .headline {
@@ -400,28 +361,29 @@ h1 {
   width: 100px;
 }
 
-.select-btn {
+.btn {
+  letter-spacing: .05rem;
   cursor: pointer;
   all: unset;
-  background: rgb(206, 239, 255);
   color: rgb(38, 71, 87);
   padding: .5rem 1rem;
   font-weight: bold;
+}
+
+.error-btn {
+ background: white;
+ cursor: pointer;
+ margin-top: 1rem;
+}
+
+.select-btn {
+  background: rgb(206, 239, 255);
   margin-top: 1rem;
 }
 
 .remove-btn {
-  cursor: pointer;
-  all: unset;
   background: rgb(206, 239, 255);
-  color: rgb(38, 71, 87);
-  padding: .5rem 1rem;
-  font-weight: bold;
   height: 20px;
-}
-
-.btn {
-  letter-spacing: .05rem
 }
 
 .remove-btn:hover {
@@ -435,7 +397,7 @@ h1 {
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+.fade-enter, .fade-leave-to {
   opacity: 0;
 }
 
