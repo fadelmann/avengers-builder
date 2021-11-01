@@ -1,45 +1,97 @@
 <template>
   <div id="app">
-    <div v-if="loading" class="spinner">
-      <img v-for="character in apiCharacters" :key="`${character.id}_spinner`" class="spinnerImgs" :src="`${character.thumbnail.path}/standard_xlarge.jpg`" :style="getComputedStyle()">
-    </div>
-    <h1 class="headline">Choose your Avengers!</h1>
-    <div class="hub" :class="{ show: show }">
+    <transition name="fade">
+      <spinner
+        v-if="loading"
+        :characters="apiCharacters"
+      />
+    </transition>
+    <h1 class="headline">
+      Choose your Avengers!
+    </h1>
+    <div
+      class="hub"
+      :class="{ show: show }"
+    >
       <div class="top">
         <div class="budget-container">
           <h4>Your Budget:</h4>
-          <h1 class="budget">${{ budget }}</h1>
+          <h1 class="budget">
+            ${{ budget }}
+          </h1>
         </div>
-        <button class="btn remove-btn" @click="removeAll">Remove all</button>
+        <button
+          class="btn remove-btn"
+          @click="removeAll"
+        >
+          Remove all
+        </button>
       </div>
       <div class="avengers">
-        
-        <div class="avenger" v-for="avenger in avengers" :key="`avenger_${avenger.id}`">          
-          <img :src="`${avenger.thumbnail.path}/standard_xlarge.jpg`" :alt="avenger.name" />
+        <div
+          v-for="avenger in avengers"
+          :key="`avenger_${avenger.id}`"
+          class="avenger"
+        >
+          <img
+            :src="`${avenger.thumbnail.path}/standard_xlarge.jpg`"
+            :alt="avenger.name"
+          >
           <h5>{{ avenger.name }}</h5>
         </div>
-        <div class="avenger" v-for="(placeholder, index) in placeholders" :key="`placeholder${index}`">
+        <div
+          v-for="(placeholder, index) in placeholders"
+          :key="`placeholder${index}`"
+          class="avenger"
+        >
           <div class="placeholder">
             <h1>?</h1>
           </div>
           <h5>?</h5>
         </div>
+      </div>
     </div>
-    </div>
-    <div class="characters">
-      <div ref="characterRef" v-for="character in apiCharacters" :key="character.id" class="character" :class="{ selected: character.selected }" @click="toggleSelect(character)">
-          <div class="thumbnail">
-            <img :src="`${character.thumbnail.path}/standard_xlarge.jpg`" :alt="character.name" />
-          </div>
-          <h1 class="card-headline">{{ character.name }}</h1>
-          <div class="description">
-            <a class="wiki-link" :href="character.urls[1].url" target="_blank">To the Wiki</a>
-          </div>
-          <button class="btn select-btn" :disabled="budget < character.price && !character.selected || avengers.length >= 6 && !character.selected">{{ character.selected === false ? 'Select' : 'Unselect' }}</button>
-          <div class="price">
-            <span v-if="!character.selected">${{ character.price }}</span>
-            <span v-else class="material-icons">check_circle</span>
-          </div>
+    <div
+      ref="characterGrid"
+      class="characters"
+    >
+      <div
+        v-for="character in apiCharacters"
+        ref="characterRef"
+        :key="character.id"
+        class="character"
+        :class="{ selected: character.selected }"
+        @click="toggleSelect(character)"
+      >
+        <div class="thumbnail">
+          <img
+            :src="`${character.thumbnail.path}/standard_xlarge.jpg`"
+            :alt="character.name"
+          >
+        </div>
+        <h1 class="card-headline">
+          {{ character.name }}
+        </h1>
+        <div class="description">
+          <a
+            class="wiki-link"
+            :href="character.urls[1].url"
+            target="_blank"
+          >To the Wiki</a>
+        </div>
+        <button
+          class="btn select-btn"
+          :disabled="budget < character.price && !character.selected || avengers.length >= 6 && !character.selected"
+        >
+          {{ character.selected === false ? 'Select' : 'Unselect' }}
+        </button>
+        <div class="price">
+          <span v-if="!character.selected">${{ character.price }}</span>
+          <span
+            v-else
+            class="material-icons"
+          >check_circle</span>
+        </div>
       </div>
     </div>
   </div>
@@ -48,79 +100,26 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import axios from 'axios';
+import imagesloaded from 'imagesloaded';
 import anime from 'animejs/lib/anime.es.js';
 // eslint-disable-next-line no-unused-vars
-import { public_key, private_key } from './marvel'
-import { characters } from './characters'
+// eslint-disable-next-line camelcase
+import { public_key } from './marvel';
+import { characters as customCharactersData } from './characters';
+import Spinner from './components/Spinner';
 
 export default {
   name: 'App',
+  components: {
+    Spinner,
+  },
   data() {
     return {
       apiCharacters: [],
       budget: 20,
       show: false,
       loading: true,
-    }
-  },
-  mounted() {
-    let promises = [];
-    for (let i = 0; i < characters.length; i++) {
-      promises.push(
-         axios.get(`https://gateway.marvel.com/v1/public/characters?name=${characters[i].name}&apikey=${public_key}`)
-         .then(response => {
-            const charObj = response.data.data.results[0];
-            charObj.price = characters[i].price;
-            charObj.selected = false;
-            charObj.btnText = 'Select';
-           this.apiCharacters.push(charObj);
-         })
-      )
-    }
-    Promise.all(promises).then(() => {
-      this.loading = false,
-      setTimeout(this.staggerChars(), 1000);
-    });
-  },
-  methods: {
-    getComputedStyle() {
-      return {
-        width: this.randomNumber(200),
-        left: this.randomNumber(window.innerWidth),
-        top: this.randomNumber(window.innerHeight),
-      }
-    },
-    randomNumber(number) {
-      return `${Math.random() * number}px`;
-    },
-    staggerChars() {
-      const targets = this.$refs.characterRef;
-      anime({
-        targets: targets,
-        translateY: 0,
-        opacity: 1,
-        delay: anime.stagger(250) // increase delay by 100ms for each elements.
-      });
-    },
-    toggleSelect(c) {
-        if(c.selected === false && this.budget >= c.price && this.avengers.length < 6) {
-          clearTimeout(this.timeOut);
-          c.selected = true;
-          this.budget -= c.price;
-          this.show = true
-          this.timeOut = setTimeout(() => {
-            this.show = false;
-          }, 2000)
-        } else if (c.selected === true) {
-          c.selected = false;
-          this.budget += c.price;
-        }
-    },
-    removeAll() {
-      this.staggerChars();
-      this.budget = 20;
-      this.apiCharacters.map(e => e.selected = false);
-    }
+    };
   },
   computed: {
     avengers() {
@@ -128,9 +127,68 @@ export default {
     },
     placeholders() {
       return 6 - this.avengers.length;
-    }
-  }
-}
+    },
+  },
+  async mounted() {
+    this.apiCharacters = await Promise.all(customCharactersData.map(({ name, price }) => {
+      // eslint-disable-next-line camelcase
+      return axios.get(`https://gateway.marvel.com/v1/public/characters?name=${name}&apikey=${public_key}`)
+        .then(r => ({
+          ...r.data.data.results[0],
+          price,
+          selected: false,
+        }));
+    }));
+
+    setTimeout(() => {
+      imagesloaded(this.$refs.characterGrid, () => {
+        this.loading = false;
+        setTimeout(this.staggerChars, 800);
+      });
+    }, 4000);
+
+  },
+  methods: {
+    getComputedStyle() {
+      return {
+        width: this.randomNumber(200),
+        left: this.randomNumber(window.innerWidth),
+        top: this.randomNumber(window.innerHeight),
+      };
+    },
+    randomNumber(number) {
+      return `${Math.random() * number}px`;
+    },
+    staggerChars() {
+      const targets = this.$refs.characterRef;
+      anime({
+        targets,
+        translateY: 0,
+        opacity: 1,
+        delay: anime.stagger(250), // increase delay by 100ms for each elements.
+      });
+    },
+    toggleSelect(c) {
+      if (c.selected === false && this.budget >= c.price && this.avengers.length < 6) {
+        clearTimeout(this.timeOut);
+        c.selected = true;
+        this.budget -= c.price;
+        this.show = true;
+        this.timeOut = setTimeout(() => {
+          this.show = false;
+        }, 2000);
+      } else if (c.selected === true) {
+        c.selected = false;
+        this.budget += c.price;
+      }
+    },
+    removeAll() {
+      this.staggerChars();
+      this.budget = 20;
+      this.apiCharacters.map(e => e.selected = false);
+    },
+  },
+};
 </script>
 
 <style>
@@ -273,7 +331,7 @@ h1 {
 }
 
 .selected .wiki-link {
-  color: black; 
+  color: black;
 }
 
 .selected .price {
@@ -371,7 +429,14 @@ h1 {
 }
 
 .select-btn:disabled {
-  opacity: .3;
+  opacity: .5;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 
 </style>

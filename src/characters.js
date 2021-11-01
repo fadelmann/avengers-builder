@@ -1,102 +1,102 @@
 export const characters = [
   {
-    name: "Hulk",
+    name: 'Hulk',
     price: 5,
   },
   {
-    name: "Scarlet Witch",
+    name: 'Scarlet Witch',
     price: 5,
   },
   {
-    name: "Vision",
+    name: 'Vision',
     price: 5,
   },
   {
-    name: "Silver Surfer",
+    name: 'Silver Surfer',
     price: 5,
   },
   {
-    name: "Doctor Strange",
+    name: 'Doctor Strange',
     price: 5,
   },
   {
-    name: "Thor",
+    name: 'Thor',
     price: 4,
   },
   {
-    name: "Iron Man",
+    name: 'Iron Man',
     price: 4,
   },
   {
-    name: "Deadpool",
+    name: 'Deadpool',
     price: 4,
   },
   {
-    name: "Black Panther",
+    name: 'Black Panther',
     price: 4,
   },
   {
-    name: "Groot",
+    name: 'Groot',
     price: 4,
   },
   {
-    name: "Magneto",
+    name: 'Magneto',
     price: 3,
   },
   {
-    name: "Blade",
+    name: 'Blade',
     price: 3,
   },
   {
-    name: "Wolverine",
+    name: 'Wolverine',
     price: 3,
   },
   {
-    name: "Captain America",
+    name: 'Captain America',
     price: 3,
   },
   {
-    name: "Daredevil",
+    name: 'Daredevil',
     price: 3,
   },
   {
-    name: "Black Widow",
+    name: 'Black Widow',
     price: 2,
   },
   {
-    name: "Gamora",
+    name: 'Gamora',
     price: 2,
   },
   {
-    name: "Storm",
+    name: 'Storm',
     price: 2,
   },
   {
-    name: "Falcon",
+    name: 'Falcon',
     price: 2,
   },
   {
-    name: "Winter Soldier",
+    name: 'Winter Soldier',
     price: 2,
   },
   {
-    name: "Loki",
+    name: 'Loki',
     price: 1,
   },
   {
-    name: "Korg",
+    name: 'Korg',
     price: 1,
   },
   {
-    name: "Nebula",
+    name: 'Nebula',
     price: 1,
   },
   {
-    name: "Drax",
+    name: 'Drax',
     price: 1,
   },
   {
-    name: "Hawkeye",
+    name: 'Hawkeye',
     price: 1,
   },
-]
+];
