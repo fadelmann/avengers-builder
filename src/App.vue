@@ -1,9 +1,8 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-unused-vars */
 <template>
   <div id="app">
-    <div v-if="loading" class="spinner"/>
+    <div v-if="loading" class="spinner">
+      <img v-for="character in apiCharacters" :key="`${character.id}_spinner`" class="spinnerImgs" :src="`${character.thumbnail.path}/standard_xlarge.jpg`" :style="getComputedStyle()">
+    </div>
     <h1 class="headline">Choose your Avengers!</h1>
     <div class="hub" :class="{ show: show }">
       <div class="top">
@@ -11,7 +10,7 @@
           <h4>Your Budget:</h4>
           <h1 class="budget">${{ budget }}</h1>
         </div>
-        <button class="remove-btn" @click="removeAll">Remove all</button>
+        <button class="btn remove-btn" @click="removeAll">Remove all</button>
       </div>
       <div class="avengers">
         
@@ -32,10 +31,15 @@
           <div class="thumbnail">
             <img :src="`${character.thumbnail.path}/standard_xlarge.jpg`" :alt="character.name" />
           </div>
-          <h1>{{ character.name }}</h1>
-          <p>price: ${{ character.price }}</p>
-          <a :href="character.urls[1].url" target="_blank">To the Wiki</a>
-          <button class="select-btn" :disabled="budget < character.price && !character.selected || avengers.length >= 6 && !character.selected">{{ character.selected === false ? 'Select' : 'Unselect' }}</button>
+          <h1 class="card-headline">{{ character.name }}</h1>
+          <div class="description">
+            <a class="wiki-link" :href="character.urls[1].url" target="_blank">To the Wiki</a>
+          </div>
+          <button class="btn select-btn" :disabled="budget < character.price && !character.selected || avengers.length >= 6 && !character.selected">{{ character.selected === false ? 'Select' : 'Unselect' }}</button>
+          <div class="price">
+            <span v-if="!character.selected">${{ character.price }}</span>
+            <span v-else class="material-icons">check_circle</span>
+          </div>
       </div>
     </div>
   </div>
@@ -60,27 +64,6 @@ export default {
     }
   },
   mounted() {
-    // let count = 0;
-    // characters.forEach(element => {
-    //   axios
-    //   .get(`https://gateway.marvel.com/v1/public/characters?name=${element.name}&apikey=${public_key}`)
-    //   .then(response => {
-    //     const charObj = response.data.data.results[0];
-    //     return charObj;
-    //       }
-    //     )
-    //     .then((e) => {
-    //       this.apiCharacters.push(e)
-    //     })
-    //     .then(() => {
-    //       if(count === characters.length) {
-    //         this.staggerChars();
-    //       }
-    //     })
-    //   .catch(error => console.log(error));
-    //   count++
-    // })
-
     let promises = [];
     for (let i = 0; i < characters.length; i++) {
       promises.push(
@@ -96,10 +79,20 @@ export default {
     }
     Promise.all(promises).then(() => {
       this.loading = false,
-      setTimeout(this.staggerChars(), 1000); 
+      setTimeout(this.staggerChars(), 1000);
     });
   },
   methods: {
+    getComputedStyle() {
+      return {
+        width: this.randomNumber(200),
+        left: this.randomNumber(window.innerWidth),
+        top: this.randomNumber(window.innerHeight),
+      }
+    },
+    randomNumber(number) {
+      return `${Math.random() * number}px`;
+    },
     staggerChars() {
       const targets = this.$refs.characterRef;
       anime({
@@ -163,14 +156,23 @@ export default {
   background-image: url(./assets/bg.jpg);
 }
 
+h1 {
+  letter-spacing: .1rem;
+}
+
 .spinner {
   position: fixed;
   height: 100vh;
   width: 100vw;
-  background: forestgreen;
+  background: rgb(38, 71, 87);
   top: 0;
   left: 0;
-  z-index: 10;
+  z-index: 20;
+}
+
+.spinnerImgs {
+  position: absolute;
+  opacity: .5;
 }
 
 .headline {
@@ -207,6 +209,29 @@ export default {
   opacity: 0;
 }
 
+.price {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background: rgb(255 246 120);
+  color: black;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 1.5rem;
+}
+
+.description {
+  margin-top: .5rem;
+}
+
+.wiki-link {
+  color: white;
+}
+
 .thumbnail {
   border-radius: 12%;
   transition: all ease-in-out 300ms;
@@ -230,10 +255,10 @@ export default {
   box-shadow: 20px 20px 0 black;
 }
 
-
 .selected {
-  background: rgb(255, 249, 169);
+  background: rgb(255 246 120);
   border: solid 5px black;
+  color: black;
 }
 
 .selected .thumbnail {
@@ -242,7 +267,21 @@ export default {
   box-shadow: 20px 20px 0 black;
 }
 
-.avenger-thubmnail{
+.selected .select-btn {
+  background: black;
+  color: rgb(255 246 120);
+}
+
+.selected .wiki-link {
+  color: black; 
+}
+
+.selected .price {
+  color: rgba(0, 0, 0, 0.26);
+  background: rgb(108, 149, 170);
+}
+
+.avenger-thubmnail {
   border-radius: 50%;
   width: 100px;
 }
@@ -321,6 +360,10 @@ export default {
   padding: .5rem 1rem;
   font-weight: bold;
   height: 20px;
+}
+
+.btn {
+  letter-spacing: .05rem
 }
 
 .remove-btn:hover {
