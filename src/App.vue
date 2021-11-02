@@ -29,6 +29,7 @@
       <hub
         :show="show"
         :budget="budget"
+        :avengers="avengers"
         @remove-all="removeAll"
       />
       <div
@@ -40,11 +41,13 @@
           ref="characterRef"
           :key="character.id"
           class="character"
-          :class="{ selected: character.selected }"
+          :class="[{ selected: character.selected }, {disabled: budget < character.price && !character.selected || avengers.length >= 6 && !character.selected}]"
           @click="toggleSelect(character)"
         >
           <card
             :character="character"
+            :avengers="avengers"
+            :budget="budget"
           />
         </div>
       </div>
@@ -84,9 +87,6 @@ export default {
   computed: {
     avengers() {
       return this.apiCharacters.filter(c => c.selected === true);
-    },
-    placeholders() {
-      return 6 - this.avengers.length;
     },
   },
   async mounted() {
@@ -228,81 +228,18 @@ h1 {
   opacity: 0;
 }
 
-.price {
-  position: absolute;
-  top: -15px;
-  right: -15px;
-  background: rgb(255 246 120);
-  color: black;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  font-size: 1.5rem;
-}
-
-.description {
-  margin-top: .5rem;
-}
-
-.wiki-link {
-  color: white;
-}
-
-.thumbnail {
-  border-radius: 12%;
-  transition: all ease-in-out 300ms;
-  box-shadow: 0 0 0 black;
-  margin:  0 0 40px 0;
-  height: 200px;
-}
-
-.thumbnail img {
-  border-radius: 12%;
-  height: 200px;
-}
-
-.character:hover {
-  border: solid 5px#ffffff;
-}
-
-.character:hover .thumbnail {
-  transform: translate(-5px, -5px);
-  box-shadow: black;
-  box-shadow: 20px 20px 0 black;
-}
-
 .selected {
   background: rgb(255 246 120);
   border: solid 5px black;
   color: black;
 }
 
-.selected .thumbnail {
-  transform: translate(-5px, -5px);
-  box-shadow: black;
-  box-shadow: 20px 20px 0 black;
+.disabled {
+  pointer-events: none;
 }
 
-.selected .select-btn {
-  background: black;
-  color: rgb(255 246 120);
-}
-
-.selected .wiki-link {
-  color: black;
-}
-
-.selected .price {
-  color: rgba(0, 0, 0, 0.26);
-  background: rgb(108, 149, 170);
-}
-
-.avenger-thubmnail {
-  border-radius: 50%;
-  width: 100px;
+.disabled .card{
+  opacity: .5 !important;
 }
 
 .hub {

@@ -65,9 +65,14 @@ export default {
       default: () => {},
     },
   },
+  computed: {
+    placeholders() {
+      return 6 - this.avengers.length;
+    },
+  },
   methods: {
     removeAll() {
-      this.$emit('removeAll');
+      this.$emit('remove-all');
     },
   },
 };
