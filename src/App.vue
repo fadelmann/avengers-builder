@@ -31,6 +31,7 @@
         :budget="budget"
         :avengers="avengers"
         @remove-all="removeAll"
+        @remove="remove"
       />
       <div
         ref="characterGrid"
@@ -146,9 +147,17 @@ export default {
       this.budget = 20;
       this.apiCharacters.map(e => e.selected = false);
     },
+    remove(avenger) {
+      this.apiCharacters.map(e => {
+        if (e.id === avenger.id) {
+          e.selected = false;
+          this.budget += e.price;
+        }
+      });
+    },
     reload() {
       location.reload();
-    }
+    },
   },
 };
 </script>
@@ -176,8 +185,17 @@ export default {
   background-image: url(./assets/bg.jpg);
 }
 
+main {
+  margin: 0 4rem;
+}
+
 h1 {
   letter-spacing: .1rem;
+  display: inline-block;
+}
+
+h3 {
+  letter-spacing: .15rem;
 }
 
 .error {
@@ -218,7 +236,7 @@ h1 {
   border-radius: 10%;
   margin: 1rem;
   padding: 2rem;
-  max-width: 400px;
+  min-width: 11%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -242,21 +260,6 @@ h1 {
   opacity: .5 !important;
 }
 
-.hub {
-  position: fixed;
-  background: black;
-  color: white;
-  min-height: 220px;
-  min-width: 60%;
-  bottom: -180px;
-  left: calc(50% - 30%);
-  box-shadow: 11px -7px 11px 3px #0000004f;
-  z-index: 10;
-  border-radius: 8rem 8rem 0 0;
-  padding: 1rem;
-  transition: all ease-in-out 300ms;
-}
-
 .placeholder {
   width: 100px;
   height: 100px;
@@ -266,14 +269,6 @@ h1 {
   justify-content: center;
   align-items: center;
   margin: 10px 0;
-}
-
-.hub:hover {
-  bottom: 0;
-}
-
-.show {
-  bottom: 0;
 }
 
 .top {
@@ -296,6 +291,7 @@ h1 {
 .avenger img{
   border-radius: 50%;
   width: 100px;
+  margin: 10px 0;
 }
 
 .btn {

@@ -6,9 +6,9 @@
         :alt="character.name"
       >
     </div>
-    <h1 class="card-headline">
+    <h2 class="card-headline">
       {{ character.name }}
-    </h1>
+    </h2>
     <div class="description">
       <a
         class="wiki-link"
@@ -84,13 +84,13 @@ export default {
   border-radius: 12%;
   transition: all ease-in-out 300ms;
   box-shadow: 0 0 0 black;
-  margin:  0 0 40px 0;
-  height: 200px;
+  margin:  0 0 20px 0;
+  height: 150px;
 }
 
 .thumbnail img {
   border-radius: 12%;
-  height: 200px;
+  height: 150px;
 }
 
 .character:hover {

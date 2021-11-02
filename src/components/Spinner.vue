@@ -31,8 +31,8 @@ export default {
     getComputedStyle(index) {
       return {
         width: this.randomNumber(200),
-        left: this.randomNumber(window.innerWidth, 0.2, 0.8),
-        top: this.randomNumber(window.innerHeight, 0.2, 0.8),
+        left: this.randomNumber(window.innerWidth, 0.1, 0.8),
+        top: this.randomNumber(window.innerHeight, 0.1, 0.8),
         'animation-delay': (index * 200) + 'ms',
       };
     },
@@ -49,6 +49,8 @@ export default {
   right: 0px;
   bottom: 0px;
   overflow: hidden;
+  background: rgb(38, 71, 87);
+  z-index: 1000;
 }
 
 .spinnerImgs {
