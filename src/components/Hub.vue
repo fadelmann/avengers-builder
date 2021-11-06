@@ -10,6 +10,9 @@
           ${{ budget }}
         </h1>
       </div>
+      <div>
+        <h3>Select {{ placeholders }} more Avengers</h3>
+      </div>
       <button
         class="btn remove-btn"
         @click="removeAll"
@@ -110,6 +113,11 @@ export default {
   bottom: 0;
 }
 
+.top {
+  display: flex;
+  align-items: center;
+}
+
 .avenger {
   position: relative;
   height: 163px;
@@ -120,14 +128,19 @@ export default {
   align-items: center;
 }
 
+.remove-btn {
+  background: rgb(206, 239, 255);
+  height: 20px;
+}
+
 .hub-remove-btn {
   cursor: pointer;
   background: rgb(38, 71, 87);
   border-radius: 50%;
   padding: .3rem;
   position: absolute;
-  right: .3rem;
-  top: .3rem;
+  right: .6rem;
+  top: .6rem;
   color: white;
   height: 1rem;
   width: 1rem;
@@ -135,5 +148,40 @@ export default {
 
 .hub-remove-btn span {
   font-size: .8rem;
+}
+
+
+.placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  background: grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 6rem;
+}
+
+.avengers {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 0 3rem;
+}
+
+.avenger {
+  margin: 10px;
+}
+
+.avenger img{
+  border-radius: 50%;
+  width: 100px;
+  margin: 10px 0;
 }
 </style>

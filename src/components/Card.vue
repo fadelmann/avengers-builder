@@ -1,33 +1,42 @@
 <template>
-  <div class="card">
-    <div class="thumbnail">
-      <img
-        :src="`${character.thumbnail.path}/standard_xlarge.jpg`"
-        :alt="character.name"
-      >
-    </div>
-    <h2 class="card-headline">
-      {{ character.name }}
-    </h2>
-    <div class="description">
-      <a
-        class="wiki-link"
-        :href="character.urls[1].url"
-        target="_blank"
-      >To the Wiki</a>
-    </div>
-    <button
-      class="btn select-btn"
-      :disabled="budget < character.price && !character.selected || avengers.length >= 6 && !character.selected"
+  <div
+    class="card"
+  >
+    <div
+      ref="transformArea"
+      class="transform-area"
+      :class="[{ selected: character.selected }, { disabled: budget < character.price && !character.selected || avengers.length >= 6 && !character.selected }]"
+      @click="selected"
     >
-      {{ character.selected === false ? 'Select' : 'Unselect' }}
-    </button>
-    <div class="price">
-      <span v-if="!character.selected">${{ character.price }}</span>
-      <span
-        v-else
-        class="material-icons"
-      >check_circle</span>
+      <div class="thumbnail">
+        <img
+          :src="`${character.thumbnail.path}/standard_xlarge.jpg`"
+          :alt="character.name"
+        >
+      </div>
+      <h2 class="card-headline">
+        {{ character.name }}
+      </h2>
+      <div class="description">
+        <a
+          class="wiki-link"
+          :href="character.urls[1].url"
+          target="_blank"
+        >To the Wiki</a>
+      </div>
+      <button
+        class="btn select-btn"
+        :disabled="budget < character.price && !character.selected || avengers.length >= 6 && !character.selected"
+      >
+        {{ character.selected === false ? 'Select' : 'Unselect' }}
+      </button>
+      <div class="price">
+        <span v-if="!character.selected">${{ character.price }}</span>
+        <span
+          v-else
+          class="material-icons"
+        >check_circle</span>
+      </div>
     </div>
   </div>
 </template>
@@ -49,14 +58,65 @@ export default {
     avengers: {
       type: Array,
       default: () => [],
-    }
+    },
   },
-  methods: {
+  mounted() {
+    this.$el.addEventListener('mouseenter', this.enter);
+    this.$el.addEventListener('mouseleave', this.reverse);
+  },
+  methods:{
+    selected() {
+      this.$emit('card-selected');
+    },
+    enter() {
+      this.$el.addEventListener('mousemove', this.rotate);
+    },
+    rotate(e) {
+      const card = {
+        width: this.$el.getBoundingClientRect().width,
+        height: this.$el.getBoundingClientRect().height,
+        x: this.$el.getBoundingClientRect().x,
+        y: this.$el.getBoundingClientRect().y,
+      };
+      const mousePosition = {
+        x: e.clientX,
+        y: e.clientY,
+      };
+      const Xposition = (mousePosition.x - card.x - card.width / 2);
+      const rotateX = Xposition / (card.width / 2);
+
+      const Yposition = (mousePosition.y - card.y - card.height / 2);
+      const rotateY = Yposition / (card.height / 2);
+      rotateY;
+      if (!(this.$refs.transformArea.classList.contains('disabled'))) {
+        this.$refs.transformArea.style.transform = `rotateY(${-rotateX * 20}deg) rotateX(${-rotateY * 20}deg)`;
+      }
+    },
+    reverse() {
+      this.$refs.transformArea.style.transform = 'rotateY(0deg) rotateX(0deg)';
+      this.$el.removeEventListener('mousemove', this.rotate);
+    },
   },
 };
 </script>
 
 <style scoped>
+.transform-area {
+  transform-origin: center;
+  transform: rotateY(0deg) rotateX(0deg);
+  background: rgb(26 45 52);
+  border: solid 5px rgb(38, 71, 87);
+  border-radius: 10%;
+  margin: 1rem;
+  padding: 2rem;
+  min-width: 11%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
 .price {
   position: absolute;
   top: -15px;
@@ -132,6 +192,22 @@ export default {
 .avenger-thubmnail {
   border-radius: 50%;
   width: 100px;
+}
+
+.selected {
+  background: rgb(255 246 120);
+  border: solid 5px black;
+  color: black;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: .5 !important;
+}
+
+.select-btn {
+  background: rgb(206, 239, 255);
+  margin-top: 1rem;
 }
 
 </style>

@@ -37,20 +37,15 @@
         ref="characterGrid"
         class="characters"
       >
-        <div
+        <card
           v-for="character in apiCharacters"
           ref="characterRef"
           :key="character.id"
-          class="character"
-          :class="[{ selected: character.selected }, {disabled: budget < character.price && !character.selected || avengers.length >= 6 && !character.selected}]"
-          @click="toggleSelect(character)"
-        >
-          <card
-            :character="character"
-            :avengers="avengers"
-            :budget="budget"
-          />
-        </div>
+          :character="character"
+          :avengers="avengers"
+          :budget="budget"
+          @card-selected="toggleSelect(character)"
+        />
       </div>
     </main>
   </div>
@@ -100,7 +95,6 @@ export default {
           selected: false,
         })).catch(() => this.error = true);
     }));
-
     setTimeout(() => {
       imagesloaded(this.$refs.characterGrid, () => {
         this.loading = false;
@@ -121,7 +115,9 @@ export default {
       return `${Math.random() * number}px`;
     },
     staggerChars() {
-      const targets = this.$refs.characterRef;
+      const targets = this.$refs.characterRef.map(item => {
+        return item['$el'];
+      });
       anime({
         targets,
         translateY: 0,
@@ -130,6 +126,7 @@ export default {
       });
     },
     toggleSelect(c) {
+      console.log('click');
       if (c.selected === false && this.budget >= c.price && this.avengers.length < 6) {
         clearTimeout(this.timeOut);
         c.selected = true;
@@ -142,6 +139,7 @@ export default {
         c.selected = false;
         this.budget += c.price;
       }
+      localStorage.setItem(this.apiCharacters, JSON.stringify(this.apiCharacters));
     },
     removeAll() {
       this.budget = 20;
@@ -230,70 +228,6 @@ h3 {
   margin-bottom: 400px;
 }
 
-.character {
-  background: rgb(26 45 52);
-  border: solid 5px rgb(38, 71, 87);
-  border-radius: 10%;
-  margin: 1rem;
-  padding: 2rem;
-  min-width: 11%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  cursor: pointer;
-  transform: translateY(-10px);
-  opacity: 0;
-}
-
-.selected {
-  background: rgb(255 246 120);
-  border: solid 5px black;
-  color: black;
-}
-
-.disabled {
-  pointer-events: none;
-}
-
-.disabled .card{
-  opacity: .5 !important;
-}
-
-.placeholder {
-  width: 100px;
-  height: 100px;
-  border-radius: 100px;
-  background: grey;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 10px 0;
-}
-
-.top {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 6rem;
-}
-
-.avengers {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  margin: 0 3rem;
-}
-
-.avenger {
-  margin: 10px;
-}
-
-.avenger img{
-  border-radius: 50%;
-  width: 100px;
-  margin: 10px 0;
-}
-
 .btn {
   letter-spacing: .05rem;
   cursor: pointer;
@@ -307,24 +241,6 @@ h3 {
  background: white;
  cursor: pointer;
  margin-top: 1rem;
-}
-
-.select-btn {
-  background: rgb(206, 239, 255);
-  margin-top: 1rem;
-}
-
-.remove-btn {
-  background: rgb(206, 239, 255);
-  height: 20px;
-}
-
-.remove-btn:hover {
-  cursor: pointer;
-}
-
-.select-btn:disabled {
-  opacity: .5;
 }
 
 .fade-enter-active, .fade-leave-active {
