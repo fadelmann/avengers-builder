@@ -23,7 +23,10 @@
       </div>
     </transition>
     <main v-if="!error">
-      <h1 class="headline">
+      <h1
+        class="headline"
+        :style="{ opacity: scrollHeadlineRatio, transform: `scale(${scrollHeadlineRatio})` }"
+      >
         Choose your Avengers!
       </h1>
       <hub
@@ -41,6 +44,7 @@
           v-for="character in apiCharacters"
           ref="characterRef"
           :key="character.id"
+          class="card"
           :character="character"
           :avengers="avengers"
           :budget="budget"
@@ -78,9 +82,13 @@ export default {
       show: false,
       loading: true,
       error: false,
+      scrollY: 0,
     };
   },
   computed: {
+    scrollHeadlineRatio() {
+      return (200 - this.scrollY) / 200 > 0 ? (200 - this.scrollY) / 200 : 0;
+    },
     avengers() {
       return this.apiCharacters.filter(c => c.selected === true);
     },
@@ -101,7 +109,7 @@ export default {
         setTimeout(this.staggerChars, 800);
       });
     }, 4000);
-
+    document.addEventListener('scroll', () => (this.scrollY = window.scrollY));
   },
   methods: {
     getComputedStyle() {
@@ -126,7 +134,6 @@ export default {
       });
     },
     toggleSelect(c) {
-      console.log('click');
       if (c.selected === false && this.budget >= c.price && this.avengers.length < 6) {
         clearTimeout(this.timeOut);
         c.selected = true;
@@ -226,6 +233,11 @@ h3 {
   justify-content: center;
   align-items: center;
   margin-bottom: 400px;
+}
+
+.card {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 .btn {

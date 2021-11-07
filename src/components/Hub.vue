@@ -131,6 +131,7 @@ export default {
 .remove-btn {
   background: rgb(206, 239, 255);
   height: 20px;
+  cursor: pointer;
 }
 
 .hub-remove-btn {
