@@ -83,13 +83,13 @@ export default {
         y: e.clientY,
       };
       const Xposition = (mousePosition.x - card.x - card.width / 2);
-      const rotateX = Xposition / (card.width / 2);
+      const rotateY = Xposition / (card.width / 2);
 
       const Yposition = (mousePosition.y - card.y - card.height / 2);
-      const rotateY = Yposition / (card.height / 2);
-      rotateY;
+      const rotateX = Yposition / (card.height / 2);
+      console.log(rotateY, rotateX);
       if (!(this.$refs.transformArea.classList.contains('disabled'))) {
-        this.$refs.transformArea.style.transform = `rotateY(${-rotateX * 20}deg) rotateX(${-rotateY * 20}deg)`;
+        this.$refs.transformArea.style.transform = `perspective(${card.width}px) rotateY(${rotateY * 5}deg) rotateX(${-rotateX * 5}deg) scale3d(1, 1, 1)`;
       }
     },
     reverse() {
@@ -101,20 +101,52 @@ export default {
 </script>
 
 <style scoped>
+.card {
+  margin: 1rem;
+}
+
 .transform-area {
   transform-origin: center;
   transform: rotateY(0deg) rotateX(0deg);
   background: rgb(26 45 52);
   border: solid 5px rgb(38, 71, 87);
   border-radius: 10%;
-  margin: 1rem;
   padding: 2rem;
-  min-width: 11%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   cursor: pointer;
+  transform-style: preserve-3d;
+}
+
+.thumbnail {
+  border-radius: 12%;
+  transition: all ease-in-out 300ms;
+  box-shadow: 0 0 0 black;
+  margin:  0 0 20px 0;
+  height: 150px;
+}
+
+.thumbnail img {
+  border-radius: 12%;
+  height: 150px;
+}
+
+@media screen and (max-width: 1405px) {
+  .transform-area {
+    padding: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 1330px) {
+  .thumbnail {
+    height: 120px;
+  }
+
+  .thumbnail img {
+    height: 120px;
+  }
 }
 
 .price {
@@ -140,24 +172,11 @@ export default {
   color: white;
 }
 
-.thumbnail {
-  border-radius: 12%;
-  transition: all ease-in-out 300ms;
-  box-shadow: 0 0 0 black;
-  margin:  0 0 20px 0;
-  height: 150px;
-}
-
-.thumbnail img {
-  border-radius: 12%;
-  height: 150px;
-}
-
-.character:hover {
+.transform-area:hover {
   border: solid 5px#ffffff;
 }
 
-.character:hover .thumbnail {
+.transform-area:hover .thumbnail {
   transform: translate(-5px, -5px);
   box-shadow: black;
   box-shadow: 20px 20px 0 black;

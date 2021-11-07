@@ -87,7 +87,7 @@ export default {
   },
   computed: {
     scrollHeadlineRatio() {
-      return (200 - this.scrollY) / 200 > 0 ? (200 - this.scrollY) / 200 : 0;
+      return (400 - this.scrollY) / 400 > 0 ? (400 - this.scrollY) / 400 : 0;
     },
     avengers() {
       return this.apiCharacters.filter(c => c.selected === true);
@@ -218,7 +218,7 @@ h3 {
 }
 
 .headline {
-  font-size: 100px;
+  font-size: 6.25rem;
   margin: 5rem 0;
   letter-spacing: .7rem;
   padding: 3rem;
@@ -233,6 +233,7 @@ h3 {
   justify-content: center;
   align-items: center;
   margin-bottom: 400px;
+  max-width: 1290px;
 }
 
 .card {
@@ -262,4 +263,25 @@ h3 {
   opacity: 0;
 }
 
+
+@media screen and (max-width: 1330px) {
+  .headline {
+    font-size: 5rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  main {
+    margin: 0 .5rem;
+  }
+
+  .headline {
+    font-size: 4rem;
+    padding: 2rem 0;
+  }
+}
 </style>

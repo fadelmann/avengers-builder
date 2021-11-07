@@ -95,7 +95,7 @@ export default {
   background: black;
   color: white;
   min-height: 220px;
-  min-width: 60%;
+  max-width: 60%;
   bottom: -180px;
   left: calc(50% - 30%);
   box-shadow: 11px -7px 11px 3px #0000004f;
