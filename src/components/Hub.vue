@@ -10,7 +10,7 @@
           ${{ budget }}
         </h1>
       </div>
-      <div>
+      <div class="hint">
         <h3>Select {{ placeholders }} more Avengers</h3>
       </div>
       <button
@@ -184,5 +184,38 @@ export default {
   border-radius: 50%;
   width: 100px;
   margin: 10px 0;
+}
+
+@media screen and (max-width: 450px) {
+  .hub {
+    max-width: 100%;
+    left: 0;
+    border-radius: 2rem 2rem 0 0;
+    padding: 1rem 0 0 0;
+  }
+
+  .top {
+    padding: 0;
+  }
+
+  .avengers {
+    overflow-y: scroll;
+    margin: 0;
+    justify-content: flex-start;
+  }
+
+  .hint {
+    margin: 0 .4rem;
+  }
+
+  .remove-btn {
+    padding: .2rem .5rem;
+    min-width: 4rem;
+    margin-right: 1rem;
+  }
+
+  .budget-container {
+    margin-left: 1rem;
+  }
 }
 </style>

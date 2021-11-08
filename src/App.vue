@@ -274,14 +274,15 @@ h3 {
   }
 }
 
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 450px) {
   main {
     margin: 0 .5rem;
   }
 
   .headline {
-    font-size: 4rem;
+    font-size: 2rem;
     padding: 2rem 0;
+    margin: 2rem 0;
   }
 }
 </style>

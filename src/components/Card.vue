@@ -149,6 +149,16 @@ export default {
   }
 }
 
+@media screen and (max-width: 450px) {
+  .thumbnail {
+    height: 70px;
+  }
+
+  .thumbnail img {
+    height: 70px;
+  }
+}
+
 .price {
   position: absolute;
   top: -15px;
