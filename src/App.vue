@@ -48,6 +48,7 @@
           :character="character"
           :avengers="avengers"
           :budget="budget"
+          :mobile="mobile"
           @card-selected="toggleSelect(character)"
         />
       </div>
@@ -83,6 +84,7 @@ export default {
       loading: true,
       error: false,
       scrollY: 0,
+      mobile: false,
     };
   },
   computed: {
@@ -110,8 +112,13 @@ export default {
       });
     }, 4000);
     document.addEventListener('scroll', () => (this.scrollY = window.scrollY));
+    window.addEventListener('resize', this.checkMedia);
+    this.checkMedia();
   },
   methods: {
+    checkMedia() {
+      this.mobile = window.matchMedia('(max-width: 450px)').matches;
+    },
     getComputedStyle() {
       return {
         width: this.randomNumber(200),
@@ -138,7 +145,7 @@ export default {
         clearTimeout(this.timeOut);
         c.selected = true;
         this.budget -= c.price;
-        this.show = true;
+        if (!this.mobile) this.show = true;
         this.timeOut = setTimeout(() => {
           this.show = false;
         }, 2000);
@@ -275,14 +282,22 @@ h3 {
 }
 
 @media screen and (max-width: 450px) {
+  #app {
+    font-size: 12px;
+  }
+
   main {
-    margin: 0 .5rem;
+    margin: 0;
   }
 
   .headline {
     font-size: 2rem;
     padding: 2rem 0;
-    margin: 2rem 0;
+    margin: 0 0 2rem 0;
+  }
+
+  .characters {
+    justify-content: space-around;
   }
 }
 </style>

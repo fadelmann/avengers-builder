@@ -1,8 +1,10 @@
 <template>
   <div
     class="hub"
-    :class="{ show: show }"
+    :class="[{ show: show }, { smooth: !dragging }]"
+    :style="y"
   >
+    <div class="hub-draggable" />
     <div class="top">
       <div class="budget-container">
         <h4>Your Budget:</h4>
@@ -13,12 +15,14 @@
       <div class="hint">
         <h3>Select {{ placeholders }} more Avengers</h3>
       </div>
-      <button
-        class="btn remove-btn"
-        @click="removeAll"
-      >
-        <span>Remove all</span>
-      </button>
+      <div class="btn-wrapper">
+        <button
+          class="btn remove-btn"
+          @click.stop.prevent="removeAll"
+        >
+          <span>Remove all</span>
+        </button>
+      </div>
     </div>
     <div class="avengers">
       <div
@@ -28,7 +32,7 @@
       >
         <button
           class="btn hub-remove-btn"
-          @click="remove(avenger)"
+          @click.stop.prevent="remove(avenger, $event)"
         >
           <span class="material-icons">close</span>
         </button>
@@ -73,17 +77,56 @@ export default {
       default: () => {},
     },
   },
+  data() {
+    return {
+      startY: 0,
+      translateY: 0,
+      currentY: 0,
+      dragging: false,
+      draggable: null,
+    };
+  },
   computed: {
     placeholders() {
       return 6 - this.avengers.length;
     },
+    y() {
+      return `transform: translateY(${this.translateY}px)`;
+    },
+  },
+  mounted() {
+    this.draggable = document.querySelector('.hub-draggable');
+    this.draggable.addEventListener('touchstart', this.dragStart);
+    this.draggable.addEventListener('touchmove', this.dragMove);
+    this.draggable.addEventListener('touchend', this.dragEnd);
   },
   methods: {
     removeAll() {
       this.$emit('remove-all');
     },
-    remove(avenger) {
+    remove(avenger, e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
       this.$emit('remove', avenger);
+    },
+    dragStart(e) {
+      this.startY = e.targetTouches[0].clientY;
+    },
+    dragMove(e) {
+      this.dragging = true;
+      e.preventDefault();
+      this.translateY = e.targetTouches[0].clientY - this.startY + this.currentY;
+    },
+    dragEnd(e) {
+      console.log(e);
+      this.dragging = false;
+      if (this.translateY < this.currentY) {
+        this.translateY = -this.$el.getBoundingClientRect().height + 80;
+        this.startY = 0;
+      } else {
+        this.translateY = 0;
+      }
+      this.currentY = this.translateY;
     },
   },
 };
@@ -102,6 +145,9 @@ export default {
   z-index: 10;
   border-radius: 8rem 8rem 0 0;
   padding: 1rem;
+}
+
+.smooth {
   transition: all ease-in-out 300ms;
 }
 
@@ -186,12 +232,37 @@ export default {
   margin: 10px 0;
 }
 
+.hint {
+  background: white;
+  color: black;
+  padding: .5rem;
+}
+
 @media screen and (max-width: 450px) {
   .hub {
     max-width: 100%;
     left: 0;
-    border-radius: 2rem 2rem 0 0;
+    border-radius: 0;
     padding: 1rem 0 0 0;
+    bottom: -540px;
+  }
+
+  .hub:hover {
+    bottom: -540px;
+  }
+
+  .hub-draggable {
+    position: absolute;
+    width: 3rem;
+    height: 5rem;
+    background: none;
+    border-top: solid 3px white;
+    content: '';
+    top: .5rem;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
   }
 
   .top {
@@ -199,23 +270,33 @@ export default {
   }
 
   .avengers {
-    overflow-y: scroll;
     margin: 0;
-    justify-content: flex-start;
+    display: flex;
+    flex-wrap: wrap;
   }
 
+
   .hint {
-    margin: 0 .4rem;
+    margin: 0;
+    color: white;
+    background: black;
+    max-width: 9.375rem;
+    width: 33%;
+  }
+
+  .btn-wrapper {
+    width: 33%;
   }
 
   .remove-btn {
-    padding: .2rem .5rem;
     min-width: 4rem;
-    margin-right: 1rem;
+    margin-right: 0;
   }
 
   .budget-container {
     margin-left: 1rem;
+    width: 33%;
+    margin: 0;
   }
 }
 </style>

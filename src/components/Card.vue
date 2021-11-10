@@ -25,6 +25,7 @@
         >To the Wiki</a>
       </div>
       <button
+        v-if="!mobile"
         class="btn select-btn"
         :disabled="budget < character.price && !character.selected || avengers.length >= 6 && !character.selected"
       >
@@ -59,6 +60,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    mobile: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted() {
     this.$el.addEventListener('mouseenter', this.enter);
@@ -72,6 +77,7 @@ export default {
       this.$el.addEventListener('mousemove', this.rotate);
     },
     rotate(e) {
+      if (this.mobile) return;
       const card = {
         width: this.$el.getBoundingClientRect().width,
         height: this.$el.getBoundingClientRect().height,
@@ -87,12 +93,12 @@ export default {
 
       const Yposition = (mousePosition.y - card.y - card.height / 2);
       const rotateX = Yposition / (card.height / 2);
-      console.log(rotateY, rotateX);
       if (!(this.$refs.transformArea.classList.contains('disabled'))) {
         this.$refs.transformArea.style.transform = `perspective(${card.width}px) rotateY(${rotateY * 5}deg) rotateX(${-rotateX * 5}deg) scale3d(1, 1, 1)`;
       }
     },
     reverse() {
+      if (this.mobile) return;
       this.$refs.transformArea.style.transform = 'rotateY(0deg) rotateX(0deg)';
       this.$el.removeEventListener('mousemove', this.rotate);
     },
@@ -133,31 +139,6 @@ export default {
   height: 150px;
 }
 
-@media screen and (max-width: 1405px) {
-  .transform-area {
-    padding: 1.5rem;
-  }
-}
-
-@media screen and (max-width: 1330px) {
-  .thumbnail {
-    height: 120px;
-  }
-
-  .thumbnail img {
-    height: 120px;
-  }
-}
-
-@media screen and (max-width: 450px) {
-  .thumbnail {
-    height: 70px;
-  }
-
-  .thumbnail img {
-    height: 70px;
-  }
-}
 
 .price {
   position: absolute;
@@ -182,15 +163,18 @@ export default {
   color: white;
 }
 
-.transform-area:hover {
-  border: solid 5px#ffffff;
+
+@media (hover: hover) {
+  .transform-area:hover {
+    border: solid 5px#ffffff;
+  }
+  .transform-area:hover .thumbnail {
+    transform: translate(-5px, -5px);
+    box-shadow: black;
+    box-shadow: 20px 20px 0 black;
+  }
 }
 
-.transform-area:hover .thumbnail {
-  transform: translate(-5px, -5px);
-  box-shadow: black;
-  box-shadow: 20px 20px 0 black;
-}
 
 .selected {
   background: rgb(255 246 120);
@@ -238,5 +222,61 @@ export default {
   background: rgb(206, 239, 255);
   margin-top: 1rem;
 }
+
+  @media screen and (max-width: 1405px) {
+    .transform-area {
+      padding: 1.5rem;
+    }
+  }
+
+  @media screen and (max-width: 1330px) {
+    .thumbnail {
+      height: 120px;
+    }
+
+    .thumbnail img {
+      height: 120px;
+    }
+  }
+
+  @media screen and (max-width: 450px) {
+    .card {
+      margin: .2rem;
+      min-width: 6.3125rem;
+    }
+
+    .thumbnail {
+      height: 80px;
+      margin: 0 0 10px 0;
+    }
+
+    .thumbnail img {
+      height: 80px;
+    }
+
+    .transform-area {
+      padding: .5rem;
+    }
+
+    .selected .thumbnail {
+      transform: translate(-1px, -1px);
+      box-shadow: 8px 8px 0 black;
+    }
+
+    h2 {
+      font-size: 1rem;
+      font-weight: 300;
+    }
+
+    .price{
+      top: -5px;
+      right: -5px;
+      height: 30px;
+      width: 30px;
+      font-size: 1rem;
+    }
+
+  }
+
 
 </style>
