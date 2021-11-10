@@ -135,9 +135,9 @@ export default {
       });
       anime({
         targets,
-        translateY: 0,
         opacity: 1,
-        delay: anime.stagger(250), // increase delay by 100ms for each elements.
+        translateY: '-10rem',
+        delay: anime.stagger(100),
       });
     },
     toggleSelect(c) {
@@ -226,7 +226,7 @@ h3 {
 
 .headline {
   font-size: 6.25rem;
-  margin: 5rem 0;
+  margin: 5rem 0 15rem 0;
   letter-spacing: .7rem;
   padding: 3rem;
   background: white;
@@ -245,7 +245,8 @@ h3 {
 
 .card {
   opacity: 0;
-  transform: translateY(-10px);
+  /* transform: translateY(-10rem); */
+  /* transition: all 300ms ease-in-out; */
 }
 
 .btn {
@@ -293,7 +294,7 @@ h3 {
   .headline {
     font-size: 2rem;
     padding: 2rem 0;
-    margin: 0 0 2rem 0;
+    margin: 0 0 12rem 0;
   }
 
   .characters {
