@@ -132,13 +132,13 @@ export default {
   box-shadow: 0 0 0 black;
   margin:  0 0 20px 0;
   height: 150px;
+  transition-delay: 200ms;
 }
 
 .thumbnail img {
   border-radius: 12%;
   height: 150px;
 }
-
 
 .price {
   position: absolute;
@@ -163,7 +163,6 @@ export default {
   color: white;
 }
 
-
 @media (hover: hover) {
   .transform-area:hover {
     border: solid 5px#ffffff;
@@ -174,7 +173,6 @@ export default {
     box-shadow: 20px 20px 0 black;
   }
 }
-
 
 .selected {
   background: rgb(255 246 120);
