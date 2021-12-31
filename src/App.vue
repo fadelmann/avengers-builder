@@ -23,6 +23,27 @@
       </div>
     </transition>
     <main v-if="!error">
+      <button @click="createCanvas">
+        generate image
+      </button>
+      <section class="flex items-center justify-center p-8">
+        <canvas id="canvas" />
+        <div
+          v-for="(image, i) in collageImages"
+          :key="i"
+        >
+          <img :src="image.src">
+        </div>
+      </section>
+      <a
+        class="twitter-share-button"
+        target="_blank"
+        :href="shareContent"
+      >
+        >
+        >
+        Tweet
+      </a>
       <h1
         class="headline"
         :style="{ opacity: scrollHeadlineRatio, transform: `scale(${scrollHeadlineRatio})` }"
@@ -81,18 +102,25 @@ export default {
       apiCharacters: [],
       budget: 20,
       show: false,
-      loading: true,
+      loading: false,
       error: false,
       scrollY: 0,
       mobile: false,
+      collageImages: [],
     };
   },
   computed: {
+    shareContent() {
+      return `https://twitter.com/intent/tweet?text=My%20Avengers%20are:%0A%0A${this.avengersArray.join('%0A')}%0AWhat%20are%20yours?%0A%0Awww.avengers-builder.com`;
+    },
     scrollHeadlineRatio() {
       return (400 - this.scrollY) / 400 > 0 ? (400 - this.scrollY) / 400 : 0;
     },
     avengers() {
       return this.apiCharacters.filter(c => c.selected === true);
+    },
+    avengersArray() {
+      return this.avengers.map(a => a.name);
     },
   },
   async mounted() {
@@ -116,6 +144,32 @@ export default {
     this.checkMedia();
   },
   methods: {
+    createCanvas() {
+      const cards = document.querySelectorAll('.card');
+      const selectedCards = [...cards].filter(c => c.firstChild.classList.contains('selected'));
+      selectedCards.forEach(c => this.createRoundImage(c.getElementsByTagName('img')[0]));
+    },
+    createRoundImage(image) {
+      const canvas = document.createElement('canvas');
+      canvas.height = 200;
+      canvas.width = 200;
+      const ctx = canvas.getContext('2d');
+      image.crossOrigin = 'anonymous';
+      image.addEventListener('load', () => {
+        ctx.drawImage(image, 0, 0, 200, 200);
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.beginPath();
+        ctx.arc(100, 100, 100, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+        const dataURL = canvas.toDataURL();
+        const CharImg = document.createElement('img');
+        CharImg.width = '200';
+        CharImg.height = '200';
+        CharImg.src = dataURL;
+        this.collageImages.push(CharImg);
+      });
+    },
     checkMedia() {
       this.mobile = window.matchMedia('(max-width: 450px)').matches;
     },
@@ -300,5 +354,9 @@ h3 {
   .characters {
     justify-content: space-around;
   }
+
+  .characters {
+    margin-bottom: 0;
+}
 }
 </style>

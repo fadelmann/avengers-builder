@@ -10,6 +10,7 @@
     >
       <div class="thumbnail">
         <img
+          class="characterImg"
           :src="`${character.thumbnail.path}/standard_xlarge.jpg`"
           :alt="character.name"
         >
